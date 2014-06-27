@@ -1,0 +1,50 @@
+name:                basic-sop
+version:             0.1.0.0
+license-file:        LICENSE
+author:              Edsko de Vries, Andres Löh
+maintainer:          edsko@well-typed.com
+category:            Generics
+build-type:          Simple
+cabal-version:       >=1.10
+tested-with:         GHC == 7.6.3, GHC == 7.8.2
+
+
+library
+  exposed-modules:     Generics.SOP.Eq
+                       Generics.SOP.Arbitrary
+                       Generics.SOP.Show
+                       Generics.SOP.Skeleton
+                       Generics.SOP.NFData
+  build-depends:       base                 >= 4.6  && < 5,
+                       generics-sop         >= 0.1  && < 0.2,
+                       text                 >= 1.1  && < 1.2,
+                       QuickCheck           >= 2.7  && < 2.8,
+                       pretty-show          >= 1.6  && < 1.7,
+                       deepseq              >= 1.3  && < 1.4
+  hs-source-dirs:      src
+  default-language:    Haskell2010
+  ghc-options:         -Wall
+  default-extensions:  ScopedTypeVariables
+                       TypeFamilies
+                       RankNTypes
+                       TypeOperators
+                       GADTs
+                       ConstraintKinds
+                       MultiParamTypeClasses
+                       TypeSynonymInstances
+                       FlexibleInstances
+                       FlexibleContexts
+                       DeriveFunctor
+                       DeriveFoldable
+                       DeriveTraversable
+                       DefaultSignatures
+                       KindSignatures
+                       DataKinds
+                       FunctionalDependencies
+                       AutoDeriveTypeable
+  other-extensions:    OverloadedStrings
+                       OverlappingInstances
+                       PolyKinds
+                       UndecidableInstances
+                       TemplateHaskell
+                       CPP
