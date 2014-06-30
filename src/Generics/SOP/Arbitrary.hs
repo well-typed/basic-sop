@@ -5,7 +5,6 @@ module Generics.SOP.Arbitrary (
   ) where
 
 import Control.Monad
-import Data.Proxy
 import Test.QuickCheck
 
 import Generics.SOP

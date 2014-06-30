@@ -41,7 +41,6 @@ library
                        KindSignatures
                        DataKinds
                        FunctionalDependencies
-                       AutoDeriveTypeable
   other-extensions:    OverloadedStrings
                        OverlappingInstances
                        PolyKinds
