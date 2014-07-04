@@ -76,8 +76,9 @@ gskeleton' (Newtype _ _ c)          = gskeletonFor c
 gskeleton' _ = error "inaccessible"
 
 gskeletonFor :: All Skeleton xs => ConstructorInfo xs -> SOP I '[xs]
-gskeletonFor (Constructor _)    = SOP $ Z $ spineWithNames (hpure (K ""))
-gskeletonFor (Record      _ fs) = SOP $ Z $ spineWithNames (hliftA fieldName fs)
+gskeletonFor (Constructor _)     = SOP $ Z $ spineWithNames (hpure (K ""))
+gskeletonFor (Infix       _ _ _) = SOP $ Z $ spineWithNames (hpure (K ""))
+gskeletonFor (Record      _ fs)  = SOP $ Z $ spineWithNames (hliftA fieldName fs)
   where
     fieldName :: FieldInfo a -> K String a
     fieldName (FieldInfo n) = K n
