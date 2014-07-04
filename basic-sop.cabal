@@ -1,6 +1,14 @@
 name:                basic-sop
 version:             0.1.0.0
 synopsis:            Basic examples and functions for generics-sop
+description:
+  This library contains various small examples of generic functions
+  written using the @<https://hackage.haskell.org/generics-sop generics-sop>@
+  library.
+  .
+  It is a good starting point if you want to see how generic functions
+  can be defined in the SOP style.
+  .
 license:             BSD3
 license-file:        LICENSE
 author:              Edsko de Vries <edsko@well-typed.com>, Andres Löh <andres@well-typed.com>
