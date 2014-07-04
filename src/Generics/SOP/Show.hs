@@ -1,13 +1,30 @@
--- | Generic 'Show' instance
+-- | Generic show.
 --
--- This is mostly just a proof of concept.
+-- This module contains a generic show function defined using
+-- @generics-sop@.
+--
 module Generics.SOP.Show (gshow) where
 
 import Data.List (intercalate)
 
 import Generics.SOP
 
--- | Generic show
+-- | Generic show.
+--
+-- This function is a proof-of-concept implementation of a function
+-- that is similar to the 'show' function you get by using
+-- 'deriving Show'.
+--
+-- It serves as an example of an SOP-style generic function that makes
+-- use of metadata. However, it does currently not handle parentheses
+-- correctly, and is therefore not really usable as a replacement.
+--
+-- If you want to use it anyway on a datatype @T@ for which you have
+-- a 'Generics.SOP.Generic' instance, you can use 'gshow' as follows:
+--
+-- > instance Show T where
+-- >   show = gshow
+--
 gshow :: forall a. (Generic a, HasDatatypeInfo a, All2 Show (Code a))
       => a -> String
 gshow a = case datatypeInfo (Proxy :: Proxy a) of

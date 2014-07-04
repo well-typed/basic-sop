@@ -1,3 +1,7 @@
+-- | Generic computation of a skeleton.
+--
+-- $skeleton
+--
 module Generics.SOP.Skeleton (Skeleton(..)) where
 
 import Control.Exception
@@ -5,11 +9,16 @@ import Data.Text (Text)
 
 import Generics.SOP
 
-{-------------------------------------------------------------------------------
-  Skeleton type class
--------------------------------------------------------------------------------}
+-- $skeleton
+--
+-- A skeleton for a record type has a defined "spine" but is undefined
+-- everywhere else. For instance, a skeleton for pairs would be
+--
+-- > (undefined, undefined)
 
--- | A skeleton for a record type has a defined "spine" but is undefined
+-- | Generic computation of a skeleton.
+--
+-- A skeleton for a record type has a defined "spine" but is undefined
 -- everywhere else. For instance, a skeleton for pairs would be
 --
 -- > (undefined, undefined)
@@ -27,9 +36,18 @@ import Generics.SOP
 -- or
 --
 -- > instance Skeleton SomeNonRecordType where skeleton = undefined
+--
+-- This is an example of how SOP-style generic functions can
+-- be used with @DefaultSignatures@.
+--
+-- Furthermore, metadata is used in order to produce better
+-- error messages. For the undefined components of a record,
+-- an error is triggered that mentions the name of the field.
+--
 class Skeleton a where
   default skeleton :: (Generic a, HasDatatypeInfo a, Code a ~ '[xs], All Skeleton xs) => a
 
+  -- | Returns a skeleton.
   skeleton :: a
   skeleton = gskeleton
 

@@ -1,8 +1,24 @@
+-- | Generic equality.
+--
+-- This module contains a generic equality function defined using
+-- @generics-sop@.
+--
 module Generics.SOP.Eq (geq) where
 
 import Data.Function
 import Generics.SOP
 
+-- | Generic equality.
+--
+-- This function reimplements the built-in generic equality that
+-- you get by using @deriving Eq@.
+--
+-- Assuming you have a 'Generics.SOP.Generic' instance for a
+-- datatype @T@, you can use 'geq' as follows:
+--
+-- > instance Eq T where
+-- >   (==) = geq
+--
 geq :: (Generic a, All2 Eq (Code a)) => a -> a -> Bool
 geq = go sing `on` from
   where
