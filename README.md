@@ -8,4 +8,4 @@ This is the development repository. For releases, look on
 [Hackage][1].
 
 [0]: https://github.com/well-typed/generics-sop
-[1]: https://hackage.haskell.org/packages/basic-sop
+[1]: https://hackage.haskell.org/package/basic-sop
