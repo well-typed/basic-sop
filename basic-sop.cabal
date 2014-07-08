@@ -32,7 +32,6 @@ library
                        generics-sop         >= 0.1  && < 0.2,
                        text                 >= 1.1  && < 1.2,
                        QuickCheck           >= 2.7  && < 2.8,
-                       pretty-show          >= 1.6  && < 1.7,
                        deepseq              >= 1.3  && < 1.4
   hs-source-dirs:      src
   default-language:    Haskell2010
