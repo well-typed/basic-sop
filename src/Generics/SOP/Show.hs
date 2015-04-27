@@ -32,7 +32,7 @@ gshow a = case datatypeInfo (Proxy :: Proxy a) of
             Newtype _ _ c  -> gshow' (c :* Nil) (from a)
 
 gshow' :: (All2 Show xss, SingI xss) => NP ConstructorInfo xss -> SOP I xss -> String
-gshow' cs (SOP sop) = unI . hcollapse $ hcliftA2' p goConstructor cs sop
+gshow' cs (SOP sop) = hcollapse $ hcliftA2' p goConstructor cs sop
 
 goConstructor :: All Show xs => ConstructorInfo xs -> NP I xs -> K String xs
 goConstructor (Constructor n) args =
