@@ -83,7 +83,7 @@ gskeletonFor (Record      _ fs)  = SOP $ Z $ spineWithNames (hliftA fieldName fs
     fieldName :: FieldInfo a -> K String a
     fieldName (FieldInfo n) = K n
 
-spineWithNames :: (All Skeleton xs, SingI xs) => NP (K String) xs -> NP I xs
+spineWithNames :: (All Skeleton xs, SListI xs) => NP (K String) xs -> NP I xs
 spineWithNames = hcliftA ps aux
   where
     aux :: Skeleton a => K String a -> I a

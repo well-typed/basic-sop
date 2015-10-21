@@ -20,12 +20,12 @@ import Generics.SOP
 -- >   (==) = geq
 --
 geq :: (Generic a, All2 Eq (Code a)) => a -> a -> Bool
-geq = go sing `on` from
+geq = go `on` from
   where
-    go :: forall xss. (All2 Eq xss) => Sing xss -> SOP I xss -> SOP I xss -> Bool
-    go SCons (SOP (Z xs))  (SOP (Z ys))  = and . hcollapse $ hcliftA2 p eq xs ys
-    go SCons (SOP (S xss)) (SOP (S yss)) = go sing (SOP xss) (SOP yss)
-    go _     _             _             = False
+    go :: forall xss. (All2 Eq xss, All SListI xss) => SOP I xss -> SOP I xss -> Bool
+    go (SOP (Z xs))  (SOP (Z ys))  = and . hcollapse $ hcliftA2 p eq xs ys
+    go (SOP (S xss)) (SOP (S yss)) = go (SOP xss) (SOP yss)
+    go _             _             = False
 
     p :: Proxy Eq
     p = Proxy

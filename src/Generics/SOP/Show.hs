@@ -31,8 +31,8 @@ gshow a = case datatypeInfo (Proxy :: Proxy a) of
             ADT     _ _ cs -> gshow' cs         (from a)
             Newtype _ _ c  -> gshow' (c :* Nil) (from a)
 
-gshow' :: (All2 Show xss, SingI xss) => NP ConstructorInfo xss -> SOP I xss -> String
-gshow' cs (SOP sop) = hcollapse $ hcliftA2' p goConstructor cs sop
+gshow' :: (All2 Show xss, SListI xss) => NP ConstructorInfo xss -> SOP I xss -> String
+gshow' cs (SOP sop) = hcollapse $ hcliftA2 allp goConstructor cs sop
 
 goConstructor :: All Show xs => ConstructorInfo xs -> NP I xs -> K String xs
 goConstructor (Constructor n) args =
@@ -56,3 +56,6 @@ goField (FieldInfo field) (I a) = K $ field ++ " = " ++ show a
 
 p :: Proxy Show
 p = Proxy
+
+allp :: Proxy (All Show)
+allp = Proxy
