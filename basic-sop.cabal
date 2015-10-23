@@ -1,5 +1,5 @@
 name:                basic-sop
-version:             0.2
+version:             0.2.0.0
 synopsis:            Basic examples and functions for generics-sop
 description:
   This library contains various small examples of generic functions
