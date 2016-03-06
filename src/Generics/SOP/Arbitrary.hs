@@ -31,7 +31,10 @@ import Generics.SOP
 -- diverges for recursive structures.
 --
 garbitrary :: forall a. (Generic a, All2 Arbitrary (Code a)) => Gen a
-garbitrary = liftM to $ hsequence =<< elements (apInjs_POP $ hcpure p arbitrary)
+garbitrary = liftM to $ hsequence =<< elements subs
   where
+    subs :: [SOP Gen (Code a)]
+    subs = apInjs_POP (hcpure p arbitrary)
+
     p :: Proxy Arbitrary
     p = Proxy
