@@ -1,8 +1,8 @@
 -- | Generic computation of a skeleton.
---
--- $skeleton
---
-module Generics.SOP.Skeleton (Skeleton(..)) where
+module Generics.SOP.Skeleton (
+  -- $skeleton
+  Skeleton(..)
+  ) where
 
 import Control.Exception
 import Data.Text (Text)
