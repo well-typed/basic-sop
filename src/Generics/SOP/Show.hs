@@ -49,7 +49,9 @@ goConstructor (Record n ns) args =
 
 goConstructor (Infix n _ _) (arg1 :* arg2 :* Nil) =
     K $ show arg1 ++ " " ++ show n ++ " " ++ show arg2
+#if __GLASGOW_HASKELL__ < 800
 goConstructor (Infix _ _ _) _ = error "inaccessible"
+#endif
 
 goField :: Show a => FieldInfo a -> I a -> K String a
 goField (FieldInfo field) (I a) = K $ field ++ " = " ++ show a

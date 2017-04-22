@@ -73,15 +73,17 @@ gskeleton = to $ gskeleton' (datatypeInfo (Proxy :: Proxy a))
 gskeleton' :: All Skeleton xs => DatatypeInfo '[xs] -> SOP I '[xs]
 gskeleton' (ADT     _ _ (c :* Nil)) = gskeletonFor c
 gskeleton' (Newtype _ _ c)          = gskeletonFor c
+#if __GLASGOW_HASKELL__ < 800
 gskeleton' _ = error "inaccessible"
+#endif
 
 gskeletonFor :: All Skeleton xs => ConstructorInfo xs -> SOP I '[xs]
 gskeletonFor (Constructor _)     = SOP $ Z $ spineWithNames (hpure (K ""))
 gskeletonFor (Infix       _ _ _) = SOP $ Z $ spineWithNames (hpure (K ""))
-gskeletonFor (Record      _ fs)  = SOP $ Z $ spineWithNames (hliftA fieldName fs)
+gskeletonFor (Record      _ fs)  = SOP $ Z $ spineWithNames (hliftA sfieldName fs)
   where
-    fieldName :: FieldInfo a -> K String a
-    fieldName (FieldInfo n) = K n
+    sfieldName :: FieldInfo a -> K String a
+    sfieldName (FieldInfo n) = K n
 
 spineWithNames :: (All Skeleton xs, SListI xs) => NP (K String) xs -> NP I xs
 spineWithNames = hcliftA ps aux
