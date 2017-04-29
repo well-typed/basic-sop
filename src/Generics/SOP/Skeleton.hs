@@ -93,7 +93,12 @@ spineWithNames = hcliftA ps aux
     aux (K n)  = I $ mapException (addFieldName n) skeleton
 
 addFieldName :: FieldName -> ErrorCall -> ErrorCall
+#if MIN_VERSION_base(4,9,0)
+addFieldName n (ErrorCallWithLocation str loc) =
+  ErrorCallWithLocation (n ++ ": " ++ str) loc
+#else
 addFieldName n (ErrorCall str) = ErrorCall (n ++ ": " ++ str)
+#endif
 
 ps :: Proxy Skeleton
 ps = Proxy
