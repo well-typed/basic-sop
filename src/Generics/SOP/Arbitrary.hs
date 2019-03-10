@@ -5,6 +5,7 @@
 --
 module Generics.SOP.Arbitrary (
     garbitrary
+    garbitrary'
     -- * Re-exports
   , Arbitrary(..)
   ) where
@@ -26,12 +27,22 @@ import Generics.SOP
 -- > instance Arbitrary T where
 -- >   arbitrary = garbitrary
 --
--- Note that currently no attempts are being made to generate arbitrary
--- values of a particular size, and it is possible that this function
--- diverges for recursive structures.
+-- Note that the size of arbitrary values is not very precise.  Divergence for
+-- recursive structures is averted by scaling down child values by a factor of 3,
+-- at the cost of potentially making parts of the structure smaller than
+-- desired.
 --
 garbitrary :: forall a. (Generic a, All2 Arbitrary (Code a)) => Gen a
-garbitrary = liftM to $ hsequence =<< elements (apInjs_POP $ hcpure p arbitrary)
+garbitrary = garbitrary' (`div` 3)
+
+-- | If 'garbitrary' generates values that are too large or too small, you can
+-- use this to play with other scaling functions.
+--
+garbitrary' :: forall a. (Generic a, All2 Arbitrary (Code a)) => (Int -> Int) -> Gen a
+garbitrary' scaleFun = liftM to $ hsequence =<< elements subs
   where
+    subs :: [SOP Gen (Code a)]
+    subs = apInjs_POP (hcpure p (scale scaleFun arbitrary))
+
     p :: Proxy Arbitrary
     p = Proxy
