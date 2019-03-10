@@ -64,7 +64,7 @@ instance Skeleton Text      where skeleton = undefined
   Generic instance
 -------------------------------------------------------------------------------}
 
--- | Compute a "spine" for single constructor datatype. That is, a valid of
+-- | Compute a "spine" for a single constructor datatype. That is, a valid value of
 -- that type with a defined spine but undefined everywhere else. For record
 -- types we give "error" values that mention the names of the fields.
 gskeleton :: forall a xs. (Generic a, HasDatatypeInfo a, Code a ~ '[xs], All Skeleton xs) => a
