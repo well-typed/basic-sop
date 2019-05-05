@@ -71,8 +71,7 @@ gskeleton :: forall a xs. (Generic a, HasDatatypeInfo a, Code a ~ '[xs], All Ske
 gskeleton = to $ gskeleton' (datatypeInfo (Proxy :: Proxy a))
 
 gskeleton' :: All Skeleton xs => DatatypeInfo '[xs] -> SOP I '[xs]
-gskeleton' (ADT     _ _ (c :* Nil)) = gskeletonFor c
-gskeleton' (Newtype _ _ c)          = gskeletonFor c
+gskeleton' d = gskeletonFor (hd (constructorInfo d))
 #if __GLASGOW_HASKELL__ < 800
 gskeleton' _ = error "inaccessible"
 #endif

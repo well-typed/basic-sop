@@ -27,9 +27,8 @@ import Generics.SOP
 --
 gshow :: forall a. (Generic a, HasDatatypeInfo a, All2 Show (Code a))
       => a -> String
-gshow a = case datatypeInfo (Proxy :: Proxy a) of
-            ADT     _ _ cs -> gshow' cs         (from a)
-            Newtype _ _ c  -> gshow' (c :* Nil) (from a)
+gshow a =
+  gshow' (constructorInfo (datatypeInfo (Proxy :: Proxy a))) (from a)
 
 gshow' :: (All2 Show xss, SListI xss) => NP ConstructorInfo xss -> SOP I xss -> String
 gshow' cs (SOP sop) = hcollapse $ hcliftA2 allp goConstructor cs sop
