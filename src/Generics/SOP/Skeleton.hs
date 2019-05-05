@@ -72,9 +72,6 @@ gskeleton = to $ gskeleton' (datatypeInfo (Proxy :: Proxy a))
 
 gskeleton' :: All Skeleton xs => DatatypeInfo '[xs] -> SOP I '[xs]
 gskeleton' d = gskeletonFor (hd (constructorInfo d))
-#if __GLASGOW_HASKELL__ < 800
-gskeleton' _ = error "inaccessible"
-#endif
 
 gskeletonFor :: All Skeleton xs => ConstructorInfo xs -> SOP I '[xs]
 gskeletonFor (Constructor _)     = SOP $ Z $ spineWithNames (hpure (K ""))
