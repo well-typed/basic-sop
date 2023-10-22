@@ -3,9 +3,9 @@
 -- This module contains a generic show function defined using
 -- @generics-sop@.
 --
-module Generics.SOP.Show (gshow) where
+module Generics.SOP.Show (gshowsPrec, gshow) where
 
-import Data.List (intercalate)
+import Data.List (intersperse)
 
 import Generics.SOP
 
@@ -16,44 +16,68 @@ import Generics.SOP
 -- 'deriving Show'.
 --
 -- It serves as an example of an SOP-style generic function that makes
--- use of metadata. However, it does currently not handle parentheses
--- correctly, and is therefore not really usable as a replacement.
+-- use of metadata.
 --
--- If you want to use it anyway on a datatype @T@ for which you have
--- a 'Generics.SOP.Generic' instance, you can use 'gshow' as follows:
+-- If you want to use it on a datatype @T@ for which you have a
+-- 'Generics.SOP.Generic' instance, you can use 'gshowsPrec' as
+-- follows:
 --
 -- > instance Show T where
--- >   show = gshow
+-- >   showsPrec = gshowsPrec
 --
-gshow :: forall a. (Generic a, HasDatatypeInfo a, All2 Show (Code a))
-      => a -> String
-gshow a =
-  gshow' (constructorInfo (datatypeInfo (Proxy :: Proxy a))) (from a)
+gshowsPrec :: forall a. (Generic a, HasDatatypeInfo a, All2 Show (Code a))
+           => Int -> a -> ShowS
+gshowsPrec prec a =
+  gshowsPrec' prec (constructorInfo (datatypeInfo (Proxy :: Proxy a))) (from a)
 
-gshow' :: (All2 Show xss, SListI xss) => NP ConstructorInfo xss -> SOP I xss -> String
-gshow' cs (SOP sop) = hcollapse $ hcliftA2 allp goConstructor cs sop
+gshow :: (Generic a, HasDatatypeInfo a, All2 Show (Code a)) => a -> String
+gshow a = gshowsPrec 0 a ""
 
-goConstructor :: All Show xs => ConstructorInfo xs -> NP I xs -> K String xs
-goConstructor (Constructor n) args =
-    K $ intercalate " " (n : args')
+gshowsPrec' :: (All2 Show xss, SListI xss) => Int -> NP ConstructorInfo xss -> SOP I xss -> ShowS
+gshowsPrec' prec cs (SOP sop) =
+  hcollapse $ hcliftA2 allp (goConstructor prec) cs sop
+
+goConstructor :: All Show xs => Int -> ConstructorInfo xs -> NP I xs -> K ShowS xs
+goConstructor prec (Constructor n) args =
+    K $
+      showParen
+        (fixity <= prec)
+        (foldr (.) id $ intersperse (showString " ") (showString n : args'))
   where
-    args' :: [String]
-    args' = hcollapse $ hcliftA p (K . show . unI) args
+    args' :: [ShowS]
+    args' = hcollapse $ hcliftA p (K . showsPrec 11 . unI) args
 
-goConstructor (Record n ns) args =
-    K $ n ++ " {" ++ intercalate ", " args' ++ "}"
+    -- With fixity = 11 the parens will be shown only if the enclosing
+    -- context is a function application.  This is correct because
+    -- function application is the only thing that binds tightly
+    -- enough to force parens around this expression.
+    fixity = 11
+
+goConstructor prec (Record n ns) args =
+    K $
+      showParen
+        (fixity <= prec)
+        (showString n . showString " {" . foldr (.) id (intersperse (showString ", ") args') . showString "}")
   where
-    args' :: [String]
+    args' :: [ShowS]
     args' = hcollapse $ hcliftA2 p goField ns args
 
-goConstructor (Infix n _ _) (arg1 :* arg2 :* Nil) =
-    K $ show arg1 ++ " " ++ show n ++ " " ++ show arg2
+    -- With fixity = 12 the parens will never be shown.  This is
+    -- correct because record construction binds tighter than even
+    -- function application!
+    fixity = 12
+
+goConstructor prec (Infix n _ fixity) (I arg1 :* I arg2 :* Nil) =
+    K $
+      showParen
+        (fixity <= prec)
+        (showsPrec fixity arg1 . showString " " . showString n . showString " " . showsPrec fixity arg2)
 #if __GLASGOW_HASKELL__ < 800
-goConstructor (Infix _ _ _) _ = error "inaccessible"
+goConstructor _ (Infix _ _ _) _ = error "inaccessible"
 #endif
 
-goField :: Show a => FieldInfo a -> I a -> K String a
-goField (FieldInfo field) (I a) = K $ field ++ " = " ++ show a
+goField :: Show a => FieldInfo a -> I a -> K ShowS a
+goField (FieldInfo field) (I a) = K $ showString field . showString " = " . showsPrec 0 a
 
 p :: Proxy Show
 p = Proxy
