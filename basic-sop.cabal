@@ -1,5 +1,5 @@
 name:                basic-sop
-version:             0.2.0.3
+version:             0.3.0
 synopsis:            Basic examples and functions for generics-sop
 description:
   This library contains various small examples of generic functions
@@ -15,8 +15,9 @@ author:              Edsko de Vries <edsko@well-typed.com>, Andres Löh <andres@
 maintainer:          andres@well-typed.com
 category:            Generics
 build-type:          Simple
-cabal-version:       >=1.10
-tested-with:         GHC==8.10.7, GHC==9.0.2, GHC==9.2.8, GHC==9.4.7, GHC==9.6.3, GHC==9.8.1 
+cabal-version:       1.24
+extra-doc-files:     CHANGELOG.md
+tested-with:         GHC==8.10.7, GHC==9.0.2, GHC==9.2.8, GHC==9.4.7, GHC==9.6.3, GHC==9.8.1
 
 source-repository head
   type:                git
